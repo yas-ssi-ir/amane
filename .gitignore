@@ -47,6 +47,9 @@ web-build/
 *.sqlite
 *.sqlite3
 
+# Dataset ML (images HAM10000 — non versionné)
+data/
+
 # ML artifacts (gros, non versionnés)
 backend/ai/models/*.pth
 backend/ai/models/*.pt
