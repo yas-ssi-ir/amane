@@ -64,13 +64,13 @@ export default function TabLayout() {
             tabBarLabel: () => null,
             tabBarIcon: ({ focused }) => (
               <View style={{
-                width: 44, height: 44, borderRadius: 14,
+                width: 40, height: 40, borderRadius: 12,
                 alignItems: 'center', justifyContent: 'center',
                 backgroundColor: focused ? '#059669' : '#10b981',
-                shadowColor: '#10b981', shadowOpacity: 0.35,
-                shadowOffset: { width: 0, height: 3 }, shadowRadius: 8, elevation: 5,
+                shadowColor: '#10b981', shadowOpacity: 0.3,
+                shadowOffset: { width: 0, height: 2 }, shadowRadius: 6, elevation: 4,
               }}>
-                <Camera size={20} color="#09090b" strokeWidth={2.5} />
+                <Camera size={19} color="#09090b" strokeWidth={2.5} />
               </View>
             ),
           }}

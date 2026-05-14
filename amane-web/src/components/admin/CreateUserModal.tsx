@@ -106,7 +106,6 @@ export function CreateUserModal({ onClose, onCreated }: CreateUserModalProps) {
                 className="w-full bg-zinc-800 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-zinc-100 focus:outline-none focus:border-violet-500/50"
               >
                 <option value="medecin">Médecin</option>
-                <option value="infirmier">Infirmier(e)</option>
                 <option value="relais">Relais de santé</option>
                 <option value="admin">Admin</option>
               </select>

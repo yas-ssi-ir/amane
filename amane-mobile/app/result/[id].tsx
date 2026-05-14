@@ -96,7 +96,7 @@ function RelaisView({ data, onBack, refreshControl }: { data: ConsultationDetail
   const isReviewed = !!data.review;
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-950" edges={['bottom']}>
+    <SafeAreaView className="flex-1 bg-zinc-950" edges={['top', 'bottom']}>
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} refreshControl={refreshControl}>
         <TopBar onBack={onBack} title="Cas envoyé" />
 
@@ -212,7 +212,7 @@ function InfirmierView({ data, onBack, refreshControl }: { data: ConsultationDet
   const ctx = relaisContext(ai.risk_level, isUncertain, isOOD, isReviewed);
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-950" edges={['bottom']}>
+    <SafeAreaView className="flex-1 bg-zinc-950" edges={['top', 'bottom']}>
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} refreshControl={refreshControl}>
         <TopBar onBack={onBack} title="Résultat infirmier" />
 
@@ -336,7 +336,7 @@ function FullView({ data, onBack, refreshControl }: { data: ConsultationDetail; 
   const heatmapUrl = absoluteUrl(ai.heatmap_url);
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-950" edges={['bottom']}>
+    <SafeAreaView className="flex-1 bg-zinc-950" edges={['top', 'bottom']}>
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} refreshControl={refreshControl}>
         <TopBar onBack={onBack} title="Détail complet" />
 

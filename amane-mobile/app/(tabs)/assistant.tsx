@@ -59,7 +59,7 @@ export default function AssistantScreen() {
     <SafeAreaView className="flex-1 bg-zinc-950" edges={['bottom']}>
       <KeyboardAvoidingView
         className="flex-1"
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior="padding"
         keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
         {/* Header */}

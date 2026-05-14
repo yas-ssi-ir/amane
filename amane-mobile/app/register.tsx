@@ -46,16 +46,6 @@ const ROLES = [
     credentialPlaceholder: null,
   },
   {
-    value: 'infirmier',
-    label: 'Infirmier(e)',
-    desc: 'Personnel infirmier — suivi médical et soins de première ligne',
-    color: '#3b82f6',
-    bg: 'rgba(59,130,246,0.12)',
-    border: 'rgba(59,130,246,0.3)',
-    credentialLabel: 'Numéro ONIP',
-    credentialPlaceholder: 'ex: ONIP-2024-XXXXX',
-  },
-  {
     value: 'medecin',
     label: 'Médecin',
     desc: 'Médecin spécialiste — validation des diagnostics et décisions thérapeutiques',
@@ -97,7 +87,7 @@ export default function RegisterScreen() {
   });
 
   const selectedRole = ROLES.find((r) => r.value === role);
-  const needsCredential = role === 'infirmier' || role === 'medecin';
+  const needsCredential = role === 'medecin';
 
   // Document justificatif
   const [docUri, setDocUri] = useState<string | null>(null);
@@ -107,7 +97,7 @@ export default function RegisterScreen() {
 
   const DOC_TYPES = [
     { value: 'carte_nationale', label: 'Carte Nationale (CIN)' },
-    { value: 'diplome', label: role === 'medecin' ? 'Diplôme de médecine' : 'Diplôme infirmier' },
+    { value: 'diplome', label: 'Diplôme de médecine' },
     { value: 'permis_exercer', label: "Permis d'exercer" },
   ];
 

@@ -112,27 +112,27 @@ export default function LoginScreen() {
 
       <SafeAreaView className="flex-1">
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior="padding"
           className="flex-1"
         >
           <ScrollView
-            contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingVertical: 32 }}
+            contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingVertical: 24 }}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
             {/* Logo + title */}
             <Animated.View
               entering={FadeInDown.duration(700).springify()}
-              className="items-center mb-12 px-6"
+              className="items-center mb-8 px-6"
             >
               <Image
                 source={require('../assets/images/icon.png')}
-                style={{ width: 96, height: 96, marginBottom: 24 }}
+                style={{ width: 68, height: 68, marginBottom: 16 }}
                 contentFit="contain"
               />
 
-              <Text className="text-zinc-50 text-5xl font-bold tracking-tight">AMANE</Text>
-              <Text className="text-zinc-500 mt-3 text-base text-center max-w-[280px]">
+              <Text className="text-zinc-50 text-4xl font-bold tracking-tight">AMANE</Text>
+              <Text className="text-zinc-500 mt-2 text-sm text-center max-w-[260px]">
                 {t('login_tagline')}
               </Text>
 

@@ -46,9 +46,6 @@ export function ConsultationCard({ consultation: c }: Props) {
       className="bg-white/[0.02] border border-white/10 rounded-2xl overflow-hidden mb-3 active:bg-white/[0.04] active:border-white/20"
     >
       <View className="flex-row">
-        {/* Bande colorée risque */}
-        <View style={{ width: 4, backgroundColor: stripeColor, opacity: 0.8 }} />
-
         {/* Thumbnail */}
         <View className="w-[88px] h-[88px] bg-zinc-900">
           {imageUrl ? (
