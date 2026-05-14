@@ -90,55 +90,50 @@ export default function ResultScreen() {
 }
 
 // =====================================================================
-// VUE RELAIS — hero couleur + action concrète seulement
+// VUE RELAIS — jamais de diagnostic IA, uniquement décision médecin
 // =====================================================================
 function RelaisView({ data, onBack, refreshControl }: { data: ConsultationDetail; onBack: () => void; refreshControl: React.ReactElement }) {
-  const ai = data.ai_result;
-  const isOOD = !!ai.is_out_of_distribution;
-  const isUncertain = ai.is_uncertain || isOOD;
   const isReviewed = !!data.review;
-  const ctx = relaisContext(ai.risk_level, isUncertain, isOOD, isReviewed);
 
   return (
     <SafeAreaView className="flex-1 bg-zinc-950" edges={['bottom']}>
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} refreshControl={refreshControl}>
         <TopBar onBack={onBack} title="Cas envoyé" />
 
-        {/* HERO */}
+        {/* HERO — neutre si en attente, vert si décision reçue */}
         <Animated.View entering={FadeInDown.duration(600).springify()} className="px-5">
           <View className="rounded-3xl overflow-hidden border border-white/10">
             <LinearGradient
-              colors={ctx.colors}
+              colors={isReviewed ? ['#047857', '#10b981'] : ['#4c1d95', '#7c3aed']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={{ padding: 28, alignItems: 'center' }}
             >
               <View
                 className="bg-white/25 rounded-3xl p-4 mb-4"
-                style={{
-                  shadowColor: '#000',
-                  shadowOpacity: 0.2,
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowRadius: 12,
-                  elevation: 6,
-                }}
+                style={{ shadowColor: '#000', shadowOpacity: 0.2, shadowOffset: { width: 0, height: 4 }, shadowRadius: 12, elevation: 6 }}
               >
-                {ctx.icon}
+                {isReviewed
+                  ? <CheckCircle2 size={32} color="white" strokeWidth={2.5} />
+                  : <Stethoscope size={32} color="white" strokeWidth={2.5} />
+                }
               </View>
               <Text className="text-white/85 text-[10px] font-bold uppercase tracking-widest mb-2">
-                {ctx.label}
+                {isReviewed ? 'Décision reçue' : 'En attente du médecin'}
               </Text>
               <Text className="text-white text-2xl font-bold text-center tracking-tight">
-                {ctx.title}
+                {isReviewed ? 'Le médecin a rendu sa décision' : 'Cas transmis au médecin'}
               </Text>
               <Text className="text-white/85 text-base text-center mt-3 leading-relaxed">
-                {ctx.message}
+                {isReviewed
+                  ? 'Consultez les instructions du médecin ci-dessous.'
+                  : 'Un médecin spécialiste va examiner ce cas. Vous serez notifié dès qu\'une décision est prise.'}
               </Text>
             </LinearGradient>
           </View>
         </Animated.View>
 
-        {/* Patient + dossier */}
+        {/* Dossier patient */}
         <Animated.View entering={FadeInDown.delay(150).duration(500)} className="px-5 mt-5">
           <View className="bg-white/[0.02] rounded-2xl border border-white/10 p-4">
             <Text className="text-emerald-400 text-[10px] font-bold uppercase tracking-widest mb-2">
@@ -159,15 +154,13 @@ function RelaisView({ data, onBack, refreshControl }: { data: ConsultationDetail
             {data.symptoms_duration && (
               <View className="flex-row justify-between py-2">
                 <Text className="text-zinc-400 text-sm">Durée</Text>
-                <Text className="text-zinc-100 text-sm font-medium">
-                  {data.symptoms_duration}
-                </Text>
+                <Text className="text-zinc-100 text-sm font-medium">{data.symptoms_duration}</Text>
               </View>
             )}
           </View>
         </Animated.View>
 
-        {/* Décision médecin si validée */}
+        {/* Décision médecin — uniquement quand validée */}
         {isReviewed && data.review && (
           <Animated.View entering={FadeInDown.delay(200).duration(500)} className="px-5 mt-5">
             <Text className="text-emerald-400 text-[10px] font-bold uppercase tracking-widest mb-2">
