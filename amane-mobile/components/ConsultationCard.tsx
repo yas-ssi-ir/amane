@@ -31,7 +31,7 @@ const RISK_STRIPE: Record<RiskLevel, string> = {
 export function ConsultationCard({ consultation: c }: Props) {
   const router = useRouter();
   const imageUrl = absoluteUrl(c.image_url);
-  const stripeColor = c.ai_risk_level ? RISK_STRIPE[c.ai_risk_level as RiskLevel] : '#3f3f46';
+  const stripeColor = c.ai_is_ood ? '#10b981' : (c.ai_risk_level ? RISK_STRIPE[c.ai_risk_level as RiskLevel] : '#3f3f46');
   const isValidated = c.status === 'validated' || c.status === 'escalated';
 
   return (

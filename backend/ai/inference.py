@@ -24,8 +24,13 @@ DEFAULT_UNCERTAINTY_THRESHOLD = 0.60
 # - Si la confiance max est < OOD_MAX_PROB_THRESHOLD : modele pas sur d'aucune classe
 # - Si l'entropie normalisee est > OOD_ENTROPY_THRESHOLD : distribution proche de l'uniforme
 # Une seule des deux conditions suffit a flagger l'image comme hors distribution.
-OOD_MAX_PROB_THRESHOLD = 0.50
-OOD_ENTROPY_THRESHOLD = 0.85
+OOD_MAX_PROB_THRESHOLD = 0.65   # relevé (0.50 → 0.65) : exiger plus de certitude
+OOD_ENTROPY_THRESHOLD = 0.75    # abaissé (0.85 → 0.75) : plus sensible aux distributions plates
+
+# "nv" (Naevus) représente ~67 % de HAM10000 : le modèle y default pour toute
+# image de peau saine. On exige un seuil de confiance plus élevé pour ce label
+# afin d'éviter les faux positifs sur photos sans lésion.
+NV_CONFIDENCE_THRESHOLD = 0.75
 
 
 class AmaneClassifier:
@@ -215,6 +220,9 @@ class AmaneClassifier:
         is_out_of_distribution = (
             primary_confidence < OOD_MAX_PROB_THRESHOLD
             or entropy_normalized > OOD_ENTROPY_THRESHOLD
+            # "nv" est la classe par défaut du modèle pour toute peau saine —
+            # on exige un niveau de confiance plus élevé pour ce label.
+            or (primary_label == "nv" and primary_confidence < NV_CONFIDENCE_THRESHOLD)
         )
 
         # 8. Déterminer si l'IA est incertaine

@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 interface RecapRowProps {
   label: string;
@@ -8,13 +8,16 @@ interface RecapRowProps {
 
 export function RecapRow({ label, value, isLast }: RecapRowProps) {
   return (
-    <View
-      className={`flex-row justify-between py-2.5 ${
-        !isLast ? 'border-b border-white/[0.06]' : ''
-      }`}
-    >
-      <Text className="text-zinc-500 text-sm">{label}</Text>
-      <Text className="text-zinc-100 text-sm font-medium">{value}</Text>
+    <View style={[s.row, !isLast && s.rowBorder]}>
+      <Text style={s.label}>{label}</Text>
+      <Text style={s.value}>{value}</Text>
     </View>
   );
 }
+
+const s = StyleSheet.create({
+  row: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10 },
+  rowBorder: { borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.06)' },
+  label: { color: '#71717a', fontSize: 13 },
+  value: { color: '#f4f4f5', fontSize: 13, fontWeight: '500' },
+});

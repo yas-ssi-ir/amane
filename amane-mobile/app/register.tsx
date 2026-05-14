@@ -2,7 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, ArrowRight, BadgeCheck, Camera, Clock, Eye, EyeOff, ImageIcon, ShieldCheck, Trash2 } from 'lucide-react-native';
+import { ArrowLeft, ArrowRight, BadgeCheck, Camera, Clock, Eye, EyeOff, ImageIcon, Trash2 } from 'lucide-react-native';
+import { Image as ExpoImage } from 'expo-image';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
@@ -238,13 +239,11 @@ export default function RegisterScreen() {
 
             {/* Header */}
             <Animated.View entering={FadeInDown.duration(500).springify()} style={{ alignItems: 'center', marginBottom: 28 }}>
-              <LinearGradient
-                colors={['#34d399', '#059669']}
-                start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-                style={{ width: 60, height: 60, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}
-              >
-                <ShieldCheck size={28} color="white" strokeWidth={2.5} />
-              </LinearGradient>
+              <ExpoImage
+                source={require('../assets/images/icon.png')}
+                style={{ width: 80, height: 80, marginBottom: 16 }}
+                contentFit="contain"
+              />
               <Text style={{ color: '#fafafa', fontSize: 26, fontWeight: '700', letterSpacing: -0.5 }}>Créer un compte</Text>
               <Text style={{ color: '#71717a', fontSize: 14, marginTop: 6, textAlign: 'center' }}>Rejoignez le réseau AMANE de santé communautaire</Text>
             </Animated.View>

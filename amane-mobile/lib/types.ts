@@ -82,6 +82,7 @@ export interface ConsultationListItem {
   ai_prediction?: string | null;
   ai_confidence?: number | null;
   ai_risk_level?: RiskLevel | null;
+  ai_is_ood?: boolean;
   image_url?: string | null;
   heatmap_url?: string | null;
   created_at: string | null;

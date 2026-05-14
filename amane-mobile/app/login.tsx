@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Redirect, useRouter } from 'expo-router';
-import { ArrowRight, Eye, EyeOff, ShieldCheck } from 'lucide-react-native';
+import { ArrowRight, Eye, EyeOff } from 'lucide-react-native';
+import { Image } from 'expo-image';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
@@ -124,21 +125,11 @@ export default function LoginScreen() {
               entering={FadeInDown.duration(700).springify()}
               className="items-center mb-12 px-6"
             >
-              <LinearGradient
-                colors={['#34d399', '#059669']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={{
-                  width: 72,
-                  height: 72,
-                  borderRadius: 24,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: 24,
-                }}
-              >
-                <ShieldCheck size={34} color="white" strokeWidth={2.5} />
-              </LinearGradient>
+              <Image
+                source={require('../assets/images/icon.png')}
+                style={{ width: 96, height: 96, marginBottom: 24 }}
+                contentFit="contain"
+              />
 
               <Text className="text-zinc-50 text-5xl font-bold tracking-tight">AMANE</Text>
               <Text className="text-zinc-500 mt-3 text-base text-center max-w-[280px]">

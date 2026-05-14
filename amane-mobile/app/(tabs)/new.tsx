@@ -3,7 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { ArrowLeft, ArrowRight, Send } from 'lucide-react-native';
 import { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInRight } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -133,7 +133,6 @@ export default function NewConsultationScreen() {
       const result = await createMutation.mutateAsync(fd);
       haptic.success();
       router.replace(`/result/${result.consultation_id}`);
-      // Ne pas reset isSubmitting : la navigation démonte le composant
     } catch (e: any) {
       setIsSubmitting(false);
       haptic.error();
@@ -144,61 +143,165 @@ export default function NewConsultationScreen() {
   if (isSubmitting || createMutation.isPending) return <AnalyzingScreen t={t} />;
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-950" edges={['bottom']}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} className="flex-1">
-        <StepIndicator current={step} total={4} />
+    // LinearGradient AS root → guaranteed visible on all platforms
+    <LinearGradient
+      colors={['#0d2318', '#071209', '#030806']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={s.root}
+    >
+      {/* Corner accent glows */}
+      <View pointerEvents="none" style={StyleSheet.absoluteFillObject}>
+        <LinearGradient
+          colors={['rgba(16,185,129,0.35)', 'transparent']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={s.accentTL}
+        />
+        <LinearGradient
+          colors={['rgba(5,150,105,0.25)', 'transparent']}
+          start={{ x: 1, y: 1 }}
+          end={{ x: 0, y: 0 }}
+          style={s.accentBR}
+        />
+        <View style={s.decorLine} />
+      </View>
 
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 20 }}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
-          <Animated.View key={step} entering={FadeInRight.duration(300)}>
-            {step === 1 && (
-              <Step1Image
-                form={form} t={t}
-                onCamera={pickFromCamera} onGallery={pickFromGallery}
-                onClear={() => { haptic.light(); update({ imageUri: null, imageMime: null, imageName: null }); }}
-                onRecordVideo={recordVideo} onPickVideo={pickVideoFromGallery}
-                onClearVideo={() => { haptic.light(); update({ videoUri: null, videoMime: null, videoName: null }); }}
-              />
-            )}
-            {step === 2 && <Step2Patient form={form} update={update} t={t} GENDERS={GENDERS} />}
-            {step === 3 && <Step3Symptoms form={form} update={update} t={t} />}
-            {step === 4 && <Step4Confirm form={form} t={t} />}
-          </Animated.View>
-        </ScrollView>
+      <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
 
-        <View className="px-5 pt-3 pb-4 bg-zinc-950 border-t border-white/[0.06] flex-row gap-3">
-          {step > 1 && (
-            <Pressable
-              onPress={() => { haptic.light(); setStep(step - 1); }}
-              className="flex-row items-center justify-center bg-white/[0.04] border border-white/10 rounded-2xl px-5 py-3.5 active:bg-white/[0.06]"
-            >
-              <ArrowLeft size={18} color="#a1a1aa" />
-            </Pressable>
-          )}
-          <Pressable
-            onPress={() => { if (step < 4) { haptic.light(); setStep(step + 1); } else { handleSubmit(); } }}
-            disabled={!canNext}
-            className={`flex-1 rounded-2xl overflow-hidden ${canNext ? '' : 'opacity-40'}`}
+          <StepIndicator current={step} total={4} />
+
+          <ScrollView
+            contentContainerStyle={{ paddingBottom: 120, paddingHorizontal: 20 }}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
           >
-            <LinearGradient
-              colors={step === 4 ? ['#10b981', '#059669'] : ['#34d399', '#10b981']}
-              start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-              style={{ paddingVertical: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+            <Animated.View key={step} entering={FadeInRight.duration(280).springify()}>
+              {step === 1 && (
+                <Step1Image
+                  form={form} t={t}
+                  onCamera={pickFromCamera} onGallery={pickFromGallery}
+                  onClear={() => { haptic.light(); update({ imageUri: null, imageMime: null, imageName: null }); }}
+                  onRecordVideo={recordVideo} onPickVideo={pickVideoFromGallery}
+                  onClearVideo={() => { haptic.light(); update({ videoUri: null, videoMime: null, videoName: null }); }}
+                />
+              )}
+              {step === 2 && <Step2Patient form={form} update={update} t={t} GENDERS={GENDERS} />}
+              {step === 3 && <Step3Symptoms form={form} update={update} t={t} />}
+              {step === 4 && <Step4Confirm form={form} t={t} />}
+            </Animated.View>
+          </ScrollView>
+
+          {/* ── Bottom nav ── */}
+          <View style={s.bottomBar}>
+            {step > 1 && (
+              <Pressable
+                onPress={() => { haptic.light(); setStep(step - 1); }}
+                style={s.backBtn}
+              >
+                <ArrowLeft size={20} color="#a1a1aa" strokeWidth={2} />
+              </Pressable>
+            )}
+            <Pressable
+              onPress={() => { if (step < 4) { haptic.light(); setStep(step + 1); } else { handleSubmit(); } }}
+              disabled={!canNext}
+              style={[s.nextBtnWrap, !canNext && { opacity: 0.35 }]}
             >
-              <Text className="text-zinc-950 font-bold text-base">
-                {step === 4 ? t('new_send') : t('new_continue')}
-              </Text>
-              {step === 4
-                ? <Send size={18} color="#09090b" strokeWidth={2.5} />
-                : <ArrowRight size={18} color="#09090b" strokeWidth={2.5} />
-              }
-            </LinearGradient>
-          </Pressable>
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+              <LinearGradient
+                colors={step === 4 ? ['#059669', '#047857'] : ['#10b981', '#059669']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={s.nextBtnGradient}
+              >
+                <Text style={s.nextBtnText}>
+                  {step === 4 ? t('new_send') : t('new_continue')}
+                </Text>
+                {step === 4
+                  ? <Send size={17} color="#fff" strokeWidth={2.5} />
+                  : <ArrowRight size={17} color="#fff" strokeWidth={2.5} />
+                }
+              </LinearGradient>
+            </Pressable>
+          </View>
+
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
+
+const s = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+  accentTL: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '70%',
+    height: 320,
+  },
+  accentBR: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: '60%',
+    height: 280,
+  },
+  decorLine: {
+    position: 'absolute',
+    top: 175,
+    left: 0,
+    right: 0,
+    height: 1,
+    backgroundColor: 'rgba(16,185,129,0.12)',
+  },
+  bottomBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    gap: 12,
+    paddingHorizontal: 20,
+    paddingTop: 14,
+    paddingBottom: 28,
+    backgroundColor: 'rgba(5,15,8,0.94)',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(16,185,129,0.15)',
+  },
+  backBtn: {
+    width: 52,
+    height: 52,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  nextBtnWrap: {
+    flex: 1,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#10b981',
+    shadowOpacity: 0.4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  nextBtnGradient: {
+    height: 52,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  nextBtnText: {
+    color: '#ffffff',
+    fontWeight: '700',
+    fontSize: 16,
+    letterSpacing: -0.3,
+  },
+});
