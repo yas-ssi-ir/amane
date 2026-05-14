@@ -7,10 +7,9 @@ import {
   Sparkles,
   Video,
   X,
-  Zap,
 } from 'lucide-react-native';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
+import { Pressable, Text, View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { CameraOverlayGuide } from './CameraOverlayGuide';
 import type { FormState } from './types';
@@ -26,206 +25,156 @@ interface Step1ImageProps {
   onClearVideo: () => void;
 }
 
-export function Step1Image({ form, t, onCamera, onGallery, onClear, onRecordVideo, onPickVideo, onClearVideo }: Step1ImageProps) {
+export function Step1Image({
+  form, t, onCamera, onGallery, onClear, onRecordVideo, onPickVideo, onClearVideo,
+}: Step1ImageProps) {
   return (
-    <View style={s.root}>
-      {/* ── Header ── */}
-      <Animated.View entering={FadeInDown.duration(400).springify()} style={s.header}>
-        <View style={s.badge}>
-          <Camera size={11} color="#34d399" strokeWidth={2.5} />
-          <Text style={s.badgeText}>Étape 1 sur 4</Text>
-        </View>
-        <Text style={s.title}>{t('new_photo_title')}</Text>
-        <Text style={s.subtitle}>{t('new_photo_desc')}</Text>
-      </Animated.View>
+    <View className="pt-3">
+      <Text className="text-emerald-400 text-[10px] font-bold uppercase tracking-widest mb-2">
+        1 / 4
+      </Text>
+      <Text className="text-zinc-100 text-2xl font-bold tracking-tight">
+        {t('new_photo_title')}
+      </Text>
+      <Text className="text-zinc-400 text-sm mt-2 mb-6">
+        {t('new_photo_desc')}
+      </Text>
 
-      {/* ── Zone image ── */}
-      <Animated.View entering={FadeInDown.delay(80).duration(400).springify()}>
-        {form.imageUri ? (
-          <Animated.View entering={FadeIn.duration(300)} style={s.imageWrap}>
-            <Image source={{ uri: form.imageUri }} style={s.image} contentFit="cover" />
-            <LinearGradient
-              colors={['transparent', 'rgba(0,0,0,0.55)']}
-              style={s.imageOverlay}
-            />
-            <View style={s.imageBadge}>
-              <CheckCircle2 size={12} color="#09090b" strokeWidth={3} />
-              <Text style={s.imageBadgeText}>Photo capturée</Text>
-            </View>
-            <Pressable onPress={onClear} style={s.clearBtn} hitSlop={12}>
-              <X size={16} color="#fff" strokeWidth={2.5} />
-            </Pressable>
-          </Animated.View>
-        ) : (
-          <CameraOverlayGuide />
-        )}
-      </Animated.View>
+      {form.imageUri ? (
+        <Animated.View
+          entering={FadeIn.duration(300)}
+          className="rounded-3xl overflow-hidden bg-zinc-900 mb-4 border border-emerald-500/30"
+          style={{
+            shadowColor: '#10b981',
+            shadowOpacity: 0.2,
+            shadowOffset: { width: 0, height: 4 },
+            shadowRadius: 12,
+            elevation: 6,
+          }}
+        >
+          <Image
+            source={{ uri: form.imageUri }}
+            style={{ width: '100%', aspectRatio: 1 }}
+            contentFit="cover"
+          />
+          <View className="absolute top-3 left-3 bg-emerald-500 px-2.5 py-1 rounded-full flex-row items-center gap-1">
+            <CheckCircle2 size={12} color="#09090b" strokeWidth={2.5} />
+            <Text className="text-zinc-950 text-[10px] font-bold uppercase tracking-wide">
+              Capturée
+            </Text>
+          </View>
+          <Pressable
+            onPress={onClear}
+            className="absolute top-3 right-3 bg-black/60 rounded-full p-2.5"
+            hitSlop={10}
+          >
+            <X size={18} color="white" />
+          </Pressable>
+        </Animated.View>
+      ) : (
+        <CameraOverlayGuide />
+      )}
 
-      {/* ── Tip ── */}
-      <Animated.View entering={FadeInDown.delay(160).duration(400).springify()} style={s.tip}>
-        <View style={s.tipIcon}>
-          <Sparkles size={16} color="#34d399" strokeWidth={2} />
+      <View className="bg-emerald-500/[0.05] border border-emerald-500/20 rounded-2xl p-4 mb-4 flex-row gap-3">
+        <Sparkles size={18} color="#34d399" strokeWidth={2} />
+        <View className="flex-1">
+          <Text className="text-emerald-300 font-semibold text-sm mb-1">{t('new_tip_title')}</Text>
+          <Text className="text-emerald-200/80 text-xs leading-relaxed">{t('new_tip_body')}</Text>
         </View>
-        <View style={{ flex: 1 }}>
-          <Text style={s.tipTitle}>{t('new_tip_title')}</Text>
-          <Text style={s.tipBody}>{t('new_tip_body')}</Text>
-        </View>
-      </Animated.View>
+      </View>
 
-      {/* ── Boutons photo ── */}
-      <Animated.View entering={FadeInDown.delay(220).duration(400).springify()} style={s.btnRow}>
-        <Pressable onPress={onCamera} style={s.primaryBtnWrap}>
+      <View className="flex-row gap-3 mb-5">
+        <Pressable onPress={onCamera} className="flex-1 rounded-2xl overflow-hidden active:opacity-80">
           <LinearGradient
             colors={['#10b981', '#059669']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={s.primaryBtn}
+            style={{
+              paddingVertical: 16,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+            }}
           >
-            <Camera size={18} color="#fff" strokeWidth={2.5} />
-            <Text style={s.primaryBtnText}>{t('new_camera')}</Text>
+            <Camera size={18} color="#09090b" strokeWidth={2.5} />
+            <Text className="text-zinc-950 font-bold text-sm">{t('new_camera')}</Text>
           </LinearGradient>
         </Pressable>
-        <Pressable onPress={onGallery} style={s.secondaryBtn}>
-          <ImageIcon size={18} color="#a1a1aa" strokeWidth={2} />
-          <Text style={s.secondaryBtnText}>{t('new_gallery')}</Text>
+        <Pressable
+          onPress={onGallery}
+          className="flex-1 bg-white/[0.04] border border-white/10 rounded-2xl py-4 flex-row items-center justify-center gap-2 active:bg-white/[0.06]"
+        >
+          <ImageIcon size={18} color="#d4d4d8" strokeWidth={2.5} />
+          <Text className="text-zinc-200 font-semibold text-sm">{t('new_gallery')}</Text>
         </Pressable>
-      </Animated.View>
+      </View>
 
-      {/* ── Séparateur vidéo ── */}
-      <Animated.View entering={FadeInDown.delay(280).duration(400).springify()} style={s.divider}>
-        <View style={s.dividerLine} />
-        <View style={s.dividerChip}>
-          <Zap size={10} color="#52525b" strokeWidth={2} />
-          <Text style={s.dividerText}>Vidéo (optionnel)</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+        <View style={{ flex: 1, height: 1, backgroundColor: 'rgba(255,255,255,0.06)' }} />
+        <Text style={{ color: '#52525b', fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1 }}>
+          Vidéo patient (optionnel)
+        </Text>
+        <View style={{ flex: 1, height: 1, backgroundColor: 'rgba(255,255,255,0.06)' }} />
+      </View>
+
+      {form.videoUri ? (
+        <Animated.View
+          entering={FadeIn.duration(300)}
+          style={{
+            backgroundColor: 'rgba(59,130,246,0.08)',
+            borderWidth: 1,
+            borderColor: 'rgba(59,130,246,0.3)',
+            borderRadius: 18,
+            padding: 16,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 12,
+            marginBottom: 8,
+          }}
+        >
+          <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: 'rgba(59,130,246,0.2)', alignItems: 'center', justifyContent: 'center' }}>
+            <Video size={22} color="#93c5fd" strokeWidth={2} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: '#bfdbfe', fontWeight: '600', fontSize: 13 }}>Vidéo attachée</Text>
+            <Text style={{ color: '#6b7280', fontSize: 11, marginTop: 2 }} numberOfLines={1}>
+              {form.videoName ?? 'video.mp4'}
+            </Text>
+            <Text style={{ color: '#4b7bb5', fontSize: 10, marginTop: 1 }}>
+              Max 60 s · 480p · Le médecin la verra
+            </Text>
+          </View>
+          <Pressable onPress={onClearVideo} hitSlop={10} style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 20, padding: 8 }}>
+            <X size={16} color="#71717a" />
+          </Pressable>
+        </Animated.View>
+      ) : (
+        <View style={{ flexDirection: 'row', gap: 10 }}>
+          <Pressable
+            onPress={onRecordVideo}
+            style={{
+              flex: 1, borderRadius: 16, borderWidth: 1, borderColor: 'rgba(59,130,246,0.3)',
+              backgroundColor: 'rgba(59,130,246,0.08)',
+              paddingVertical: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}
+          >
+            <Video size={16} color="#93c5fd" strokeWidth={2.5} />
+            <Text style={{ color: '#93c5fd', fontWeight: '600', fontSize: 13 }}>Enregistrer</Text>
+          </Pressable>
+          <Pressable
+            onPress={onPickVideo}
+            style={{
+              flex: 1, borderRadius: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+              backgroundColor: 'rgba(255,255,255,0.03)',
+              paddingVertical: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}
+          >
+            <ImageIcon size={16} color="#a1a1aa" strokeWidth={2.5} />
+            <Text style={{ color: '#a1a1aa', fontWeight: '600', fontSize: 13 }}>Galerie</Text>
+          </Pressable>
         </View>
-        <View style={s.dividerLine} />
-      </Animated.View>
-
-      {/* ── Vidéo ── */}
-      <Animated.View entering={FadeInDown.delay(320).duration(400).springify()}>
-        {form.videoUri ? (
-          <View style={s.videoCard}>
-            <View style={s.videoIcon}>
-              <Video size={20} color="#93c5fd" strokeWidth={2} />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={s.videoName}>Vidéo attachée</Text>
-              <Text style={s.videoMeta} numberOfLines={1}>{form.videoName ?? 'video.mp4'}</Text>
-            </View>
-            <Pressable onPress={onClearVideo} hitSlop={10} style={s.videoRemove}>
-              <X size={14} color="#71717a" strokeWidth={2.5} />
-            </Pressable>
-          </View>
-        ) : (
-          <View style={s.videoBtnRow}>
-            <Pressable onPress={onRecordVideo} style={s.videoBtnRecord}>
-              <Video size={15} color="#93c5fd" strokeWidth={2.5} />
-              <Text style={s.videoBtnRecordText}>Enregistrer</Text>
-            </Pressable>
-            <Pressable onPress={onPickVideo} style={s.videoBtnGallery}>
-              <ImageIcon size={15} color="#71717a" strokeWidth={2} />
-              <Text style={s.videoBtnGalleryText}>Galerie</Text>
-            </Pressable>
-          </View>
-        )}
-      </Animated.View>
+      )}
     </View>
   );
 }
-
-const s = StyleSheet.create({
-  root: { paddingTop: 4 },
-  header: { marginBottom: 20 },
-  badge: {
-    flexDirection: 'row', alignItems: 'center', gap: 5,
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(16,185,129,0.1)',
-    borderRadius: 20, borderWidth: 1, borderColor: 'rgba(52,211,153,0.25)',
-    paddingHorizontal: 10, paddingVertical: 5, marginBottom: 12,
-  },
-  badgeText: { color: '#34d399', fontSize: 10, fontWeight: '700', letterSpacing: 1.4, textTransform: 'uppercase' },
-  title: { color: '#f4f4f5', fontSize: 26, fontWeight: '800', letterSpacing: -0.5, marginBottom: 6 },
-  subtitle: { color: '#71717a', fontSize: 14, lineHeight: 20 },
-
-  imageWrap: {
-    borderRadius: 24, overflow: 'hidden',
-    marginBottom: 14, borderWidth: 1, borderColor: 'rgba(52,211,153,0.25)',
-    shadowColor: '#10b981', shadowOpacity: 0.2, shadowOffset: { width: 0, height: 6 }, shadowRadius: 16, elevation: 6,
-  },
-  image: { width: '100%', aspectRatio: 1 },
-  imageOverlay: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 80 },
-  imageBadge: {
-    position: 'absolute', top: 12, left: 12,
-    flexDirection: 'row', alignItems: 'center', gap: 5,
-    backgroundColor: '#10b981', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 5,
-  },
-  imageBadgeText: { color: '#09090b', fontSize: 10, fontWeight: '800', letterSpacing: 0.5 },
-  clearBtn: {
-    position: 'absolute', top: 12, right: 12,
-    backgroundColor: 'rgba(0,0,0,0.65)', borderRadius: 20, padding: 8,
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)',
-  },
-
-  tip: {
-    flexDirection: 'row', gap: 12, alignItems: 'flex-start',
-    backgroundColor: 'rgba(16,185,129,0.07)',
-    borderWidth: 1, borderColor: 'rgba(52,211,153,0.18)',
-    borderRadius: 18, padding: 14, marginBottom: 16,
-  },
-  tipIcon: {
-    width: 34, height: 34, borderRadius: 10,
-    backgroundColor: 'rgba(52,211,153,0.12)', alignItems: 'center', justifyContent: 'center',
-  },
-  tipTitle: { color: '#6ee7b7', fontWeight: '700', fontSize: 13, marginBottom: 4 },
-  tipBody: { color: 'rgba(110,231,183,0.7)', fontSize: 12, lineHeight: 18 },
-
-  btnRow: { flexDirection: 'row', gap: 10, marginBottom: 18 },
-  primaryBtnWrap: {
-    flex: 1, borderRadius: 16, overflow: 'hidden',
-    shadowColor: '#10b981', shadowOpacity: 0.35, shadowOffset: { width: 0, height: 4 }, shadowRadius: 10, elevation: 5,
-  },
-  primaryBtn: { height: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
-  primaryBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
-  secondaryBtn: {
-    flex: 1, height: 52, borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.04)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)',
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
-  },
-  secondaryBtnText: { color: '#a1a1aa', fontWeight: '600', fontSize: 15 },
-
-  divider: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 },
-  dividerLine: { flex: 1, height: 1, backgroundColor: 'rgba(255,255,255,0.06)' },
-  dividerChip: {
-    flexDirection: 'row', alignItems: 'center', gap: 5,
-    backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: 20,
-    paddingHorizontal: 10, paddingVertical: 4,
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)',
-  },
-  dividerText: { color: '#52525b', fontSize: 10, fontWeight: '600', letterSpacing: 0.5 },
-
-  videoCard: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    backgroundColor: 'rgba(59,130,246,0.07)', borderWidth: 1, borderColor: 'rgba(59,130,246,0.25)',
-    borderRadius: 18, padding: 14,
-  },
-  videoIcon: {
-    width: 42, height: 42, borderRadius: 12,
-    backgroundColor: 'rgba(59,130,246,0.15)', alignItems: 'center', justifyContent: 'center',
-  },
-  videoName: { color: '#bfdbfe', fontWeight: '600', fontSize: 13 },
-  videoMeta: { color: '#6b7280', fontSize: 11, marginTop: 2 },
-  videoRemove: {
-    backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 20, padding: 8,
-  },
-  videoBtnRow: { flexDirection: 'row', gap: 10 },
-  videoBtnRecord: {
-    flex: 1, height: 48, borderRadius: 14, borderWidth: 1, borderColor: 'rgba(59,130,246,0.3)',
-    backgroundColor: 'rgba(59,130,246,0.07)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7,
-  },
-  videoBtnRecordText: { color: '#93c5fd', fontWeight: '600', fontSize: 13 },
-  videoBtnGallery: {
-    flex: 1, height: 48, borderRadius: 14, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
-    backgroundColor: 'rgba(255,255,255,0.03)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7,
-  },
-  videoBtnGalleryText: { color: '#71717a', fontWeight: '600', fontSize: 13 },
-});
