@@ -33,6 +33,7 @@ export default function NewConsultationScreen() {
   ];
 
   const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState<FormState>({
     imageUri: null, imageMime: null, imageName: null,
     videoUri: null, videoMime: null, videoName: null,
@@ -127,17 +128,20 @@ export default function NewConsultationScreen() {
       }
     }
 
+    setIsSubmitting(true);
     try {
       const result = await createMutation.mutateAsync(fd);
       haptic.success();
       router.replace(`/result/${result.consultation_id}`);
+      // Ne pas reset isSubmitting : la navigation démonte le composant
     } catch (e: any) {
+      setIsSubmitting(false);
       haptic.error();
       Alert.alert(t('error'), e.message ?? t('send_fail'));
     }
   };
 
-  if (createMutation.isPending) return <AnalyzingScreen t={t} />;
+  if (isSubmitting || createMutation.isPending) return <AnalyzingScreen t={t} />;
 
   return (
     <SafeAreaView className="flex-1 bg-zinc-950" edges={['bottom']}>

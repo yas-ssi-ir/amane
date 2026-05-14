@@ -105,6 +105,7 @@ export const consultationsApi = {
     api
       .post<ConsultationCreateResponse>('/api/consultations', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        timeout: 120_000, // ResNet18 + Grad-CAM + Gemini peuvent prendre jusqu'à 2 min
       })
       .then((r) => r.data),
 };
