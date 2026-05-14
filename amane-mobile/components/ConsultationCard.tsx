@@ -4,6 +4,7 @@ import { CheckCircle2, Clock } from 'lucide-react-native';
 import { Pressable, Text, View } from 'react-native';
 
 import { absoluteUrl } from '@/lib/api';
+import { useAuthStore } from '@/lib/auth-store';
 import { haptic } from '@/lib/haptics';
 import type { ConsultationListItem, RiskLevel } from '@/lib/types';
 import { RiskBadge } from './RiskBadge';
@@ -30,8 +31,10 @@ const RISK_STRIPE: Record<RiskLevel, string> = {
 
 export function ConsultationCard({ consultation: c }: Props) {
   const router = useRouter();
+  const role = useAuthStore((s) => s.user?.role ?? 'relais');
+  const isRelais = role === 'relais';
   const imageUrl = absoluteUrl(c.image_url);
-  const stripeColor = c.ai_is_ood ? '#10b981' : (c.ai_risk_level ? RISK_STRIPE[c.ai_risk_level as RiskLevel] : '#3f3f46');
+  const stripeColor = isRelais ? '#3f3f46' : (c.ai_is_ood ? '#10b981' : (c.ai_risk_level ? RISK_STRIPE[c.ai_risk_level as RiskLevel] : '#3f3f46'));
   const isValidated = c.status === 'validated' || c.status === 'escalated';
 
   return (
@@ -69,16 +72,20 @@ export function ConsultationCard({ consultation: c }: Props) {
               className="text-zinc-100 font-semibold text-sm flex-1 mr-2"
               numberOfLines={1}
             >
-              {c.ai_prediction ?? 'Analyse en cours...'}
+              {isRelais
+                ? (isValidated ? 'Décision reçue' : 'En attente du médecin')
+                : (c.ai_prediction ?? 'Analyse en cours...')}
             </Text>
-            <RiskBadge
-              level={c.ai_risk_level}
-              isUncertain={c.status === 'ai_analyzed' && c.ai_confidence != null && c.ai_confidence < 0.66}
-              size="sm"
-            />
+            {!isRelais && (
+              <RiskBadge
+                level={c.ai_risk_level}
+                isUncertain={c.status === 'ai_analyzed' && c.ai_confidence != null && c.ai_confidence < 0.66}
+                size="sm"
+              />
+            )}
           </View>
 
-          {c.ai_confidence != null && (
+          {!isRelais && c.ai_confidence != null && (
             <View className="flex-row items-center gap-1.5 mb-1.5">
               <View className="flex-1 h-1 bg-white/[0.06] rounded-full overflow-hidden">
                 <View
