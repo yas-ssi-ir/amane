@@ -1,0 +1,90 @@
+# =====================================================================
+# AMANE - .gitignore racine
+# =====================================================================
+
+# Secrets / env
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Python
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+*.tsbuildinfo
+.next/
+out/
+.turbo/
+
+# Expo / React Native
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# Build artifacts
+*.apk
+*.aab
+*.ipa
+*.jks
+*.keystore
+
+# Database (DEV - SQLite local)
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# ML artifacts (gros, non versionnés)
+backend/ai/models/*.pth
+backend/ai/models/*.pt
+backend/ai/models/*.onnx
+backend/ai/models/__pycache__/
+
+# ML training output (peut être régénéré)
+# Garder evaluation_report.json + calibration.json + splits.json (petits, traçables)
+# backend/ai/models/training_history.json reste si tu veux audit l'entrainement
+
+# Uploads (données utilisateurs)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Coverage / tests
+coverage/
+.coverage
+htmlcov/
+.nyc_output/
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Temporary
+*.tmp
+*.bak
+*~

@@ -1,0 +1,43 @@
+# API
+fastapi==0.115.0
+uvicorn==0.30.0
+python-multipart==0.0.9
+
+# Config
+python-dotenv==1.0.1
+
+# IA
+torch
+torchvision
+grad-cam
+
+# Vision
+opencv-python
+pillow
+numpy
+
+# DB
+sqlalchemy==2.0.30
+alembic==1.13.2
+# psycopg2-binary  # decommente si tu deploies sur PostgreSQL
+
+# Validation
+pydantic==2.7.0
+
+# Auth & Security
+python-jose[cryptography]
+passlib[bcrypt]==1.7.4
+
+# HTTP / Dev
+requests
+httpx
+
+# Tests
+pytest
+pytest-asyncio
+
+# Linting
+ruff
+
+# Gemini multimodal (second avis IA)
+google-genai

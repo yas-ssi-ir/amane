@@ -1,0 +1,156 @@
+{
+  "checkpoint": "C:\\Users\\LENOVO\\Desktop\\AMANE\\backend\\ai\\models\\amane_skin_v1.pth",
+  "split_hash": "5255dd6103b54850",
+  "ckpt_split_hash": "5255dd6103b54850",
+  "split_consistent": true,
+  "best_val_acc_train": 84.02130492676432,
+  "best_val_f1_macro_train": 0.7746230952873935,
+  "epoch": 12,
+  "eval_set": "test",
+  "eval_size": 1503,
+  "temperature": 1.5456855297088623,
+  "temperature_source": "calibration.json",
+  "global_accuracy": 0.8323,
+  "global_f1_macro": 0.7422,
+  "per_class": [
+    {
+      "code": "mel",
+      "label": "Melanome",
+      "support": 167,
+      "precision": 0.5657,
+      "recall": 0.6707,
+      "f1": 0.6137
+    },
+    {
+      "code": "nv",
+      "label": "Naevus",
+      "support": 1006,
+      "precision": 0.9516,
+      "recall": 0.8797,
+      "f1": 0.9143
+    },
+    {
+      "code": "bcc",
+      "label": "Carcinome basocellulaire",
+      "support": 77,
+      "precision": 0.7333,
+      "recall": 0.8571,
+      "f1": 0.7904
+    },
+    {
+      "code": "akiec",
+      "label": "Keratose actinique",
+      "support": 49,
+      "precision": 0.6735,
+      "recall": 0.6735,
+      "f1": 0.6735
+    },
+    {
+      "code": "bkl",
+      "label": "Keratose benigne",
+      "support": 165,
+      "precision": 0.6275,
+      "recall": 0.7758,
+      "f1": 0.6938
+    },
+    {
+      "code": "df",
+      "label": "Dermatofibrome",
+      "support": 17,
+      "precision": 0.7857,
+      "recall": 0.6471,
+      "f1": 0.7097
+    },
+    {
+      "code": "vasc",
+      "label": "Lesion vasculaire",
+      "support": 22,
+      "precision": 0.8889,
+      "recall": 0.7273,
+      "f1": 0.8
+    }
+  ],
+  "confusion_matrix": [
+    [
+      112,
+      30,
+      0,
+      5,
+      20,
+      0,
+      0
+    ],
+    [
+      63,
+      885,
+      8,
+      3,
+      44,
+      1,
+      2
+    ],
+    [
+      5,
+      1,
+      66,
+      1,
+      2,
+      2,
+      0
+    ],
+    [
+      2,
+      0,
+      7,
+      33,
+      7,
+      0,
+      0
+    ],
+    [
+      14,
+      10,
+      7,
+      6,
+      128,
+      0,
+      0
+    ],
+    [
+      0,
+      2,
+      2,
+      0,
+      2,
+      11,
+      0
+    ],
+    [
+      2,
+      2,
+      0,
+      1,
+      1,
+      0,
+      16
+    ]
+  ],
+  "classes": [
+    "mel",
+    "nv",
+    "bcc",
+    "akiec",
+    "bkl",
+    "df",
+    "vasc"
+  ],
+  "confidence_correct_mean": 0.8744999766349792,
+  "confidence_incorrect_mean": 0.6500999927520752,
+  "best_uncertainty_threshold": {
+    "threshold": 0.66,
+    "coverage": 0.7797737857618097,
+    "acc_covered": 0.9052901023890785,
+    "score": 0.7797737857618097,
+    "target_acc": 0.9
+  }
+}

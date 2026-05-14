@@ -1,0 +1,147 @@
+{
+  "checkpoint": "C:\\Users\\LENOVO\\Desktop\\AMANE\\backend\\ai\\models\\amane_skin_v1.pth",
+  "best_val_acc_train": 84.82276585122317,
+  "epoch": 15,
+  "eval_size": 2003,
+  "global_accuracy": 0.8482,
+  "per_class": [
+    {
+      "code": "mel",
+      "label": "Melanome",
+      "support": 223,
+      "precision": 0.5751,
+      "recall": 0.704,
+      "f1": 0.6331
+    },
+    {
+      "code": "nv",
+      "label": "Naevus",
+      "support": 1341,
+      "precision": 0.9493,
+      "recall": 0.8934,
+      "f1": 0.9205
+    },
+    {
+      "code": "bcc",
+      "label": "Carcinome basocellulaire",
+      "support": 103,
+      "precision": 0.7963,
+      "recall": 0.835,
+      "f1": 0.8152
+    },
+    {
+      "code": "akiec",
+      "label": "Keratose actinique",
+      "support": 65,
+      "precision": 0.619,
+      "recall": 0.8,
+      "f1": 0.698
+    },
+    {
+      "code": "bkl",
+      "label": "Keratose benigne",
+      "support": 220,
+      "precision": 0.7389,
+      "recall": 0.7591,
+      "f1": 0.7489
+    },
+    {
+      "code": "df",
+      "label": "Dermatofibrome",
+      "support": 23,
+      "precision": 0.75,
+      "recall": 0.6522,
+      "f1": 0.6977
+    },
+    {
+      "code": "vasc",
+      "label": "Lesion vasculaire",
+      "support": 28,
+      "precision": 0.8,
+      "recall": 0.8571,
+      "f1": 0.8276
+    }
+  ],
+  "confusion_matrix": [
+    [
+      157,
+      41,
+      1,
+      10,
+      13,
+      1,
+      0
+    ],
+    [
+      87,
+      1198,
+      11,
+      3,
+      36,
+      1,
+      5
+    ],
+    [
+      4,
+      2,
+      86,
+      2,
+      7,
+      2,
+      0
+    ],
+    [
+      2,
+      2,
+      5,
+      52,
+      3,
+      1,
+      0
+    ],
+    [
+      20,
+      13,
+      4,
+      15,
+      167,
+      0,
+      1
+    ],
+    [
+      2,
+      4,
+      0,
+      2,
+      0,
+      15,
+      0
+    ],
+    [
+      1,
+      2,
+      1,
+      0,
+      0,
+      0,
+      24
+    ]
+  ],
+  "classes": [
+    "mel",
+    "nv",
+    "bcc",
+    "akiec",
+    "bkl",
+    "df",
+    "vasc"
+  ],
+  "confidence_correct_mean": 0.9406999945640564,
+  "confidence_incorrect_mean": 0.7652999758720398,
+  "best_uncertainty_threshold": {
+    "threshold": 0.76,
+    "coverage": 0.8487269096355466,
+    "acc_covered": 0.9029411764705882,
+    "score": 0.8487269096355466
+  }
+}

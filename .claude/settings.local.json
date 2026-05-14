@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/LENOVO/.claude/projects/C--Users-LENOVO-Desktop-AMANE/memory//**)",
+      "Read(//c/Users/LENOVO/.claude/projects/C--Users-LENOVO-Desktop-AMANE/memory/**)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(list\\(d.get\\('dependencies',{}\\).keys\\(\\)\\)\\)\")",
+      "Bash(npx tsc *)",
+      "PowerShell(Get-Process *)",
+      "PowerShell(Test-NetConnection *)",
+      "Bash(node_modules/.bin/tsc --noEmit)",
+      "Bash(python -c ' *)",
+      "Bash(xargs grep -l \"login\\\\|Login\\\\|signin\\\\|SignIn\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('backend/main.py'\\).read\\(\\)\\); print\\('main.py OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('backend/schemas.py'\\).read\\(\\)\\); print\\('schemas.py OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('backend/auth.py'\\).read\\(\\)\\); print\\('auth.py OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('backend/ai/inference.py'\\).read\\(\\)\\); print\\('inference.py OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('backend/ai/explain.py'\\).read\\(\\)\\); print\\('explain.py OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('backend/main.py', encoding='utf-8'\\).read\\(\\)\\); print\\('main.py OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('backend/schemas.py', encoding='utf-8'\\).read\\(\\)\\); print\\('schemas.py OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('backend/auth.py', encoding='utf-8'\\).read\\(\\)\\); print\\('auth.py OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('backend/ai/inference.py', encoding='utf-8'\\).read\\(\\)\\); print\\('inference.py OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('backend/ai/explain.py', encoding='utf-8'\\).read\\(\\)\\); print\\('explain.py OK'\\)\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\([k for k in d.get\\('dependencies',{}\\) if 'theme' in k.lower\\(\\) or 'next-theme' in k.lower\\(\\)]\\)\")",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\AMANE\\\\amane-mobile\\\\app\" -File -Recurse | ForEach-Object { \"$\\($_.FullName\\) \\($\\($_.Length\\) bytes\\)\" })",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\AMANE\\\\amane-mobile\\\\lib\" -File -Recurse | ForEach-Object { \"$\\($_.FullName\\) \\($\\($_.Length\\) bytes\\)\" })",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\AMANE\\\\amane-mobile\\\\components\" -Recurse | ForEach-Object { \"$\\($_.FullName\\) \\($\\($_.Length\\) bytes\\)\" })",
+      "PowerShell(Get-Content *)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\LENOVO\\\\Desktop\\\\AMANE\\\\amane-web\\\\src\\\\components\" -Directory | ForEach-Object { $_.Name })",
+      "Bash(python *)",
+      "Bash(venv/Scripts/python *)",
+      "Bash(sed -n '105,120p' backend/database.py)",
+      "Bash(sed -n '253,310p' backend/database.py)",
+      "Bash(npx expo *)",
+      "Bash(xargs grep -l \"ConsultationListItem\")",
+      "Bash(PYTHONIOENCODING=utf-8 venv/Scripts/python -c ' *)",
+      "Bash(PYTHONIOENCODING=utf-8 venv/Scripts/python *)"
+    ]
+  }
+}
