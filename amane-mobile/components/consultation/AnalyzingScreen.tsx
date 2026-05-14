@@ -81,7 +81,8 @@ function ProgressItem({ text, done, loading, delay }: ProgressItemProps) {
       className="flex-row items-center gap-3"
     >
       <View
-        className={`w-8 h-8 rounded-full items-center justify-center ${
+        style={{ width: 32, height: 32, flexShrink: 0 }}
+        className={`rounded-full items-center justify-center ${
           done
             ? 'bg-emerald-500/15 border border-emerald-500/40'
             : loading
@@ -94,10 +95,11 @@ function ProgressItem({ text, done, loading, delay }: ProgressItemProps) {
         ) : loading ? (
           <ActivityIndicator size="small" color="#34d399" />
         ) : (
-          <View className="w-2 h-2 rounded-full bg-zinc-600" />
+          <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#52525b' }} />
         )}
       </View>
       <Text
+        style={{ flex: 1 }}
         className={`text-sm ${done || loading ? 'text-zinc-100 font-medium' : 'text-zinc-500'}`}
       >
         {text}

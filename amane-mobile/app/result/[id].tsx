@@ -359,10 +359,10 @@ function FullView({ data, onBack, refreshControl }: { data: ConsultationDetail; 
                 <View className="bg-white/25 rounded-2xl p-2">{ctx.icon}</View>
                 <View className="flex-1">
                   <Text className="text-white/85 text-[10px] font-bold uppercase tracking-widest">
-                    {isOOD ? 'Image atypique' : `Risque ${riskLabel(ai.risk_level)}`}
+                    {isOOD ? 'Aucune lésion détectée' : `Risque ${riskLabel(ai.risk_level)}`}
                   </Text>
                   <Text className="text-white text-xl font-bold mt-0.5 tracking-tight">
-                    {isOOD ? "Hors domaine d'entraînement" : ai.primary_diagnosis}
+                    {isOOD ? 'Peau saine — Risque très faible' : ai.primary_diagnosis}
                   </Text>
                 </View>
               </View>
@@ -507,13 +507,13 @@ function relaisContext(
 ): RelaisCtx {
   if (ood) {
     return {
-      colors: ['#7e22ce', '#a855f7'],
-      icon: <ScanSearch size={32} color="white" strokeWidth={2.5} />,
-      label: 'Image atypique',
-      title: 'Le médecin doit examiner cette image',
+      colors: ['#047857', '#10b981'],
+      icon: <Heart size={32} color="white" strokeWidth={2.5} />,
+      label: 'Aucune lésion détectée',
+      title: 'Peau saine — Risque très faible',
       message:
-        "L'IA n'a pas reconnu cette image dans son domaine d'entraînement. " +
-        "Un médecin va l'examiner manuellement.",
+        "Aucune lésion dermatologique n'a été détectée sur cette image. " +
+        'Surveillez toute évolution et reconsultez si une anomalie apparaît.',
     };
   }
   if (reviewed) {

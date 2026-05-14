@@ -61,7 +61,7 @@ export default function TabLayout() {
           name="new"
           options={{
             title: 'Nouvelle consultation',
-            tabBarLabel: t('new'),
+            tabBarLabel: () => null,
             tabBarIcon: ({ focused }) => (
               <View style={{
                 width: 44, height: 44, borderRadius: 14,
