@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { CheckCircle2, Clock } from 'lucide-react-native';
+import { CheckCircle2 } from 'lucide-react-native';
 import { Pressable, Text, View } from 'react-native';
 
 import { absoluteUrl } from '@/lib/api';
@@ -106,23 +106,15 @@ export function ConsultationCard({ consultation: c }: Props) {
           </Text>
 
           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
-            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginRight: 8 }}>
-              {isValidated && (
-                <CheckCircle2 size={10} color="#34d399" strokeWidth={2.5} />
-              )}
-              <Text
-                numberOfLines={1}
-                style={{ flex: 1, fontSize: 10, fontWeight: '500', letterSpacing: 0.8, textTransform: 'uppercase', color: isValidated ? '#10b981' : '#71717a', marginLeft: isValidated ? 3 : 0 }}
-              >
-                {STATUS_LABEL[c.status] ?? c.status}
-              </Text>
-            </View>
-            {c.created_at && (
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
-                <Clock size={10} color="#71717a" />
-                <Text style={{ color: '#71717a', fontSize: 11 }}>{relativeTime(c.created_at)}</Text>
-              </View>
+            {isValidated && (
+              <CheckCircle2 size={10} color="#34d399" strokeWidth={2.5} />
             )}
+            <Text
+              numberOfLines={1}
+              style={{ fontSize: 10, fontWeight: '500', letterSpacing: 0.8, textTransform: 'uppercase', color: isValidated ? '#10b981' : '#71717a', marginLeft: isValidated ? 3 : 0 }}
+            >
+              {STATUS_LABEL[c.status] ?? c.status}
+            </Text>
           </View>
         </View>
       </View>
@@ -130,18 +122,3 @@ export function ConsultationCard({ consultation: c }: Props) {
   );
 }
 
-function relativeTime(iso: string): string {
-  const normalized = /[Z+\-]\d*$/.test(iso) ? iso : iso + 'Z';
-  const parsed = new Date(normalized).getTime();
-  if (isNaN(parsed)) return '';
-  const diff = Date.now() - parsed;
-  if (diff < 0) return "à l'instant";
-  const s = Math.floor(diff / 1_000);
-  if (s < 60) return `il y a ${s}s`;
-  const m = Math.floor(s / 60);
-  if (m < 60) return `il y a ${m}m`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `il y a ${h}h`;
-  const d = Math.floor(h / 24);
-  return `il y a ${d}j`;
-}

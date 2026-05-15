@@ -98,11 +98,11 @@ const s = StyleSheet.create({
   },
   circleTitle: {
     color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '300',
+    fontSize: 17,
+    fontWeight: '700',
     textAlign: 'center',
-    lineHeight: 24,
-    letterSpacing: 0.8,
+    lineHeight: 25,
+    letterSpacing: -0.2,
   },
   stepsSection: {
     flex: 1,
