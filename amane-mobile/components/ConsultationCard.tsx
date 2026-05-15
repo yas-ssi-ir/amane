@@ -56,9 +56,7 @@ export function ConsultationCard({ consultation: c }: Props) {
             />
           ) : (
             <View className="flex-1 items-center justify-center">
-              <View className="w-8 h-8 rounded-xl bg-white/[0.04] items-center justify-center">
-                <Clock size={16} color="#52525b" />
-              </View>
+              <View className="w-8 h-8 rounded-xl bg-white/[0.06]" />
             </View>
           )}
         </View>
