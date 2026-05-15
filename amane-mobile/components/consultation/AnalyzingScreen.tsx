@@ -30,9 +30,12 @@ export function AnalyzingScreen({ t }: AnalyzingScreenProps) {
     <SafeAreaView style={s.root}>
       {/* Grand cercle pulsant en haut avec le texte centré dedans */}
       <View style={s.topSection}>
-        <Animated.View style={[s.circle, pulseStyle]}>
+        <View style={s.circleWrapper}>
+          {/* Cercle qui pulse — opacité indépendante du texte */}
+          <Animated.View style={[StyleSheet.absoluteFill, { borderRadius: 100 }, pulseStyle]} />
+          {/* Texte toujours à pleine opacité */}
           <Text style={s.circleTitle}>{"L'IA analyse\nvotre cas"}</Text>
-        </Animated.View>
+        </View>
       </View>
 
       {/* Étapes centrées dans l'espace restant */}
@@ -87,22 +90,23 @@ const s = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 56,
   },
-  circle: {
+  circleWrapper: {
     width: 200,
     height: 200,
     borderRadius: 100,
     backgroundColor: 'rgba(16,185,129,0.18)',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    overflow: 'hidden',
   },
   circleTitle: {
     color: '#ffffff',
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: '700',
     textAlign: 'center',
-    lineHeight: 25,
-    letterSpacing: -0.2,
+    lineHeight: 26,
+    letterSpacing: -0.3,
+    paddingHorizontal: 24,
   },
   stepsSection: {
     flex: 1,
