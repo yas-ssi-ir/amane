@@ -34,7 +34,9 @@ export function AnalyzingScreen({ t }: AnalyzingScreenProps) {
           {/* Cercle qui pulse — opacité indépendante du texte */}
           <Animated.View style={[StyleSheet.absoluteFill, { borderRadius: 100 }, pulseStyle]} />
           {/* Texte toujours à pleine opacité */}
-          <Text style={s.circleTitle}>{"L'IA analyse\nvotre cas"}</Text>
+          <Text style={s.circleTitle} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
+            {"L'IA analyse votre cas"}
+          </Text>
         </View>
       </View>
 
@@ -100,15 +102,12 @@ const s = StyleSheet.create({
     overflow: 'hidden',
   },
   circleTitle: {
-    color: '#ffffff',
-    fontSize: 22,
+    color: '#f4f4f5',
+    fontSize: 20,
     fontWeight: '700',
-    fontFamily: 'serif',
-    fontStyle: 'italic',
     textAlign: 'center',
-    lineHeight: 30,
-    letterSpacing: 0.3,
-    paddingHorizontal: 20,
+    letterSpacing: -0.4,
+    paddingHorizontal: 10,
   },
   stepsSection: {
     flex: 1,
