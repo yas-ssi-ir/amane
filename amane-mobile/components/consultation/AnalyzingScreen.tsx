@@ -28,10 +28,10 @@ export function AnalyzingScreen({ t }: AnalyzingScreenProps) {
 
   return (
     <SafeAreaView style={s.root}>
-      {/* Grand cercle pulsant en haut */}
+      {/* Grand cercle pulsant en haut avec le texte centré dedans */}
       <View style={s.topSection}>
         <Animated.View style={[s.circle, pulseStyle]}>
-          <ActivityIndicator size="large" color="#34d399" />
+          <Text style={s.circleTitle}>{"L'IA analyse\nvotre cas"}</Text>
         </Animated.View>
       </View>
 
@@ -55,10 +55,10 @@ interface ProgressItemProps {
 
 function ProgressItem({ text, done, loading, delay }: ProgressItemProps) {
   const circleStyle = done
-    ? s.circleDone
+    ? s.dotDone
     : loading
-    ? s.circleLoading
-    : s.circleIdle;
+    ? s.dotLoading
+    : s.dotIdle;
 
   return (
     <Animated.View entering={FadeInDown.delay(delay).duration(400)} style={s.row}>
@@ -94,6 +94,15 @@ const s = StyleSheet.create({
     backgroundColor: 'rgba(16,185,129,0.18)',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+  circleTitle: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '300',
+    textAlign: 'center',
+    lineHeight: 24,
+    letterSpacing: 0.8,
   },
   stepsSection: {
     flex: 1,
@@ -115,15 +124,15 @@ const s = StyleSheet.create({
     flexShrink: 0,
     borderWidth: 1,
   },
-  circleDone: {
+  dotDone: {
     backgroundColor: 'rgba(52,211,153,0.12)',
     borderColor: 'rgba(52,211,153,0.35)',
   },
-  circleLoading: {
+  dotLoading: {
     backgroundColor: 'rgba(52,211,153,0.08)',
     borderColor: 'rgba(52,211,153,0.25)',
   },
-  circleIdle: {
+  dotIdle: {
     backgroundColor: 'rgba(255,255,255,0.03)',
     borderColor: 'rgba(255,255,255,0.08)',
   },

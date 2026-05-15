@@ -105,19 +105,22 @@ export function ConsultationCard({ consultation: c }: Props) {
             {c.symptoms}
           </Text>
 
-          <View className="flex-row items-center justify-between mt-2">
-            <View className="flex-1 flex-row items-center gap-1 mr-2">
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginRight: 8 }}>
               {isValidated && (
                 <CheckCircle2 size={10} color="#34d399" strokeWidth={2.5} />
               )}
-              <Text className={`text-[10px] font-medium uppercase tracking-wide flex-1 ${isValidated ? 'text-emerald-500' : 'text-zinc-500'}`} numberOfLines={1}>
+              <Text
+                numberOfLines={1}
+                style={{ flex: 1, fontSize: 10, fontWeight: '500', letterSpacing: 0.8, textTransform: 'uppercase', color: isValidated ? '#10b981' : '#71717a', marginLeft: isValidated ? 3 : 0 }}
+              >
                 {STATUS_LABEL[c.status] ?? c.status}
               </Text>
             </View>
             {c.created_at && (
-              <View className="flex-row items-center gap-1">
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
                 <Clock size={10} color="#71717a" />
-                <Text className="text-zinc-500 text-[10px]">{relativeTime(c.created_at)}</Text>
+                <Text style={{ color: '#71717a', fontSize: 11 }}>{relativeTime(c.created_at)}</Text>
               </View>
             )}
           </View>

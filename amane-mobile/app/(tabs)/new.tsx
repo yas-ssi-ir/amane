@@ -29,7 +29,6 @@ export default function NewConsultationScreen() {
   const GENDERS: { value: Gender; label: string }[] = [
     { value: 'M', label: t('new_gender_m') },
     { value: 'F', label: t('new_gender_f') },
-    { value: 'AUTRE', label: t('new_gender_other') },
   ];
 
   const [step, setStep] = useState(1);

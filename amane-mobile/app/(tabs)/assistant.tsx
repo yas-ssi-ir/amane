@@ -1,3 +1,4 @@
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Bot, Send, Trash2, User } from 'lucide-react-native';
 import { useRef, useState } from 'react';
 import {
@@ -23,6 +24,7 @@ interface Message {
 
 export default function AssistantScreen() {
   const t = useT();
+  const tabBarHeight = useBottomTabBarHeight();
   const [messages, setMessages] = useState<Message[]>([
     { role: 'assistant', content: t('assistant_welcome') },
   ]);
@@ -60,7 +62,7 @@ export default function AssistantScreen() {
       <KeyboardAvoidingView
         className="flex-1"
         behavior="padding"
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : tabBarHeight}
       >
         {/* Header */}
         <Animated.View
