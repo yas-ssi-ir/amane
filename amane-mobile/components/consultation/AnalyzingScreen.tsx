@@ -21,31 +21,51 @@ export function AnalyzingScreen({ t }: AnalyzingScreenProps) {
     -1,
     true,
   );
+
+  const wave = useSharedValue(0);
+  wave.value = withRepeat(
+    withTiming(1, { duration: 3500, easing: Easing.inOut(Easing.ease) }),
+    -1,
+    true,
+  );
+
   const pulseStyle = useAnimatedStyle(() => ({
-    opacity: 0.35 + pulse.value * 0.55,
-    transform: [{ scale: 1 + pulse.value * 0.07 }],
+    opacity: 0.3 + pulse.value * 0.6,
   }));
+
+  const wavyStyle = useAnimatedStyle(() => {
+    const t = wave.value;
+    return {
+      borderTopLeftRadius: 80 + t * 40,
+      borderTopRightRadius: 120 - t * 40,
+      borderBottomLeftRadius: 120 - t * 40,
+      borderBottomRightRadius: 80 + t * 40,
+    };
+  });
 
   return (
     <SafeAreaView style={s.root}>
-      {/* Grand cercle pulsant en haut avec le texte centré dedans */}
-      <View style={s.topSection}>
-        <View style={s.circleWrapper}>
-          {/* Cercle qui pulse — opacité indépendante du texte */}
-          <Animated.View style={[StyleSheet.absoluteFill, { borderRadius: 100 }, pulseStyle]} />
-          {/* Texte toujours à pleine opacité */}
-          <Text style={s.circleTitle} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
+      <View style={s.content}>
+        {/* Cercle wavy centré */}
+        <Animated.View style={[s.circleWrapper, wavyStyle]}>
+          <Animated.View style={[StyleSheet.absoluteFill, pulseStyle]} />
+          <Text
+            style={s.circleTitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.6}
+          >
             {"L'IA analyse votre cas"}
           </Text>
-        </View>
-      </View>
+        </Animated.View>
 
-      {/* Étapes centrées dans l'espace restant */}
-      <View style={s.stepsSection}>
-        <ProgressItem text={t('new_step_image')} done delay={0} />
-        <ProgressItem text={t('new_step_resnet')} loading delay={200} />
-        <ProgressItem text={t('new_step_heatmap')} delay={400} />
-        <ProgressItem text={t('new_step_gemini')} delay={600} />
+        {/* Étapes sous le cercle */}
+        <View style={s.stepsSection}>
+          <ProgressItem text={t('new_step_image')} done delay={0} />
+          <ProgressItem text={t('new_step_resnet')} loading delay={200} />
+          <ProgressItem text={t('new_step_heatmap')} delay={400} />
+          <ProgressItem text={t('new_step_gemini')} delay={600} />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -59,11 +79,7 @@ interface ProgressItemProps {
 }
 
 function ProgressItem({ text, done, loading, delay }: ProgressItemProps) {
-  const circleStyle = done
-    ? s.dotDone
-    : loading
-    ? s.dotLoading
-    : s.dotIdle;
+  const circleStyle = done ? s.dotDone : loading ? s.dotLoading : s.dotIdle;
 
   return (
     <Animated.View entering={FadeInDown.delay(delay).duration(400)} style={s.row}>
@@ -88,21 +104,24 @@ const s = StyleSheet.create({
     flex: 1,
     backgroundColor: '#09090b',
   },
-  topSection: {
+  content: {
+    flex: 1,
     alignItems: 'center',
-    paddingTop: 56,
+    justifyContent: 'center',
+    paddingHorizontal: 32,
   },
   circleWrapper: {
     width: 200,
     height: 200,
-    borderRadius: 100,
-    backgroundColor: 'rgba(16,185,129,0.18)',
+    backgroundColor: 'rgba(52,211,153,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(52,211,153,0.25)',
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
   },
   circleTitle: {
-    color: '#f4f4f5',
+    color: 'rgba(244,244,245,0.55)',
     fontSize: 20,
     fontWeight: '700',
     textAlign: 'center',
@@ -110,10 +129,9 @@ const s = StyleSheet.create({
     paddingHorizontal: 10,
   },
   stepsSection: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 32,
+    marginTop: 48,
     gap: 14,
+    width: '100%',
   },
   row: {
     flexDirection: 'row',
