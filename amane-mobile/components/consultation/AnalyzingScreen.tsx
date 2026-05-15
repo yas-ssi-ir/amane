@@ -101,12 +101,14 @@ const s = StyleSheet.create({
   },
   circleTitle: {
     color: '#ffffff',
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: '700',
+    fontFamily: 'serif',
+    fontStyle: 'italic',
     textAlign: 'center',
-    lineHeight: 26,
-    letterSpacing: -0.3,
-    paddingHorizontal: 24,
+    lineHeight: 30,
+    letterSpacing: 0.3,
+    paddingHorizontal: 20,
   },
   stepsSection: {
     flex: 1,
