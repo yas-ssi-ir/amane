@@ -144,7 +144,7 @@ export default function NewConsultationScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-zinc-950" edges={['bottom']}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} className="flex-1">
+      <KeyboardAvoidingView behavior="padding" className="flex-1">
         <StepIndicator current={step} total={4} />
 
         <ScrollView

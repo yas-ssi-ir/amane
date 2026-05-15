@@ -106,11 +106,11 @@ export function ConsultationCard({ consultation: c }: Props) {
           </Text>
 
           <View className="flex-row items-center justify-between mt-2">
-            <View className="flex-row items-center gap-1">
+            <View className="flex-1 flex-row items-center gap-1 mr-2">
               {isValidated && (
                 <CheckCircle2 size={10} color="#34d399" strokeWidth={2.5} />
               )}
-              <Text className={`text-[10px] font-medium uppercase tracking-wide ${isValidated ? 'text-emerald-500' : 'text-zinc-500'}`}>
+              <Text className={`text-[10px] font-medium uppercase tracking-wide flex-1 ${isValidated ? 'text-emerald-500' : 'text-zinc-500'}`} numberOfLines={1}>
                 {STATUS_LABEL[c.status] ?? c.status}
               </Text>
             </View>
@@ -128,10 +128,15 @@ export function ConsultationCard({ consultation: c }: Props) {
 }
 
 function relativeTime(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const m = Math.floor(diff / 60_000);
-  if (m < 1) return "à l'instant";
-  if (m < 60) return `il y a ${m} min`;
+  const normalized = /[Z+\-]\d*$/.test(iso) ? iso : iso + 'Z';
+  const parsed = new Date(normalized).getTime();
+  if (isNaN(parsed)) return '';
+  const diff = Date.now() - parsed;
+  if (diff < 0) return "à l'instant";
+  const s = Math.floor(diff / 1_000);
+  if (s < 60) return `il y a ${s}s`;
+  const m = Math.floor(s / 60);
+  if (m < 60) return `il y a ${m}m`;
   const h = Math.floor(m / 60);
   if (h < 24) return `il y a ${h}h`;
   const d = Math.floor(h / 24);

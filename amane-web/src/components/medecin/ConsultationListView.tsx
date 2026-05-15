@@ -15,7 +15,15 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import { absoluteUrl } from "@/lib/api";
-import type { ConsultationListItem, HealthCoverage, RiskLevel, ZoneType } from "@/lib/types";
+import type {
+  ConsultationListItem,
+  HealthCoverage,
+  RiskLevel,
+  ZoneType,
+} from "@/lib/types";
+
+import { RiskBadge } from "@/components/RiskBadge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const RISK_STRIPE: Record<RiskLevel, string> = {
   CRITICAL: "#ef4444",
@@ -23,10 +31,6 @@ const RISK_STRIPE: Record<RiskLevel, string> = {
   MEDIUM: "#3b82f6",
   LOW: "#10b981",
 };
-
-import { RiskBadge } from "@/components/RiskBadge";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
 
 const easeOut: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -38,32 +42,24 @@ interface FilterDef {
 }
 
 interface Props {
-  /** Données + état React Query */
   data: ConsultationListItem[] | undefined;
   isLoading: boolean;
   isRefetching: boolean;
   refetch: () => void;
 
-  /** Header */
   eyebrow: string;
   eyebrowLive?: boolean;
   title: string;
   subtitle: string;
 
-  /** Filtres optionnels (queue uniquement) */
   filters?: FilterDef[];
   defaultFilter?: FilterKind;
 
-  /** Tri custom (queue trie par urgence, validated par date) */
   sortFn?: (a: ConsultationListItem, b: ConsultationListItem) => number;
 
-  /** Empty states */
   emptyMessages: Record<FilterKind | "search", string>;
 
-  /** Indicateur visuel "validé" sur chaque carte (validated page) */
   showValidatedIcon?: boolean;
-
-  /** Active les filtres zone géographique et couverture santé */
   showZoneCoverageFilters?: boolean;
 }
 
@@ -87,11 +83,12 @@ export function ConsultationListView({
   const [filter, setFilter] = useState<FilterKind>(defaultFilter);
   const [search, setSearch] = useState("");
   const [zoneFilter, setZoneFilter] = useState<ZoneType | "all">("all");
-  const [coverageFilter, setCoverageFilter] = useState<HealthCoverage | "all">("all");
+  const [coverageFilter, setCoverageFilter] = useState<HealthCoverage | "all">(
+    "all",
+  );
 
   const visible = useMemo(() => {
     if (!data) return [];
-
     const filtered = data.filter((c) => {
       if (search) {
         const s = search.toLowerCase();
@@ -106,33 +103,38 @@ export function ConsultationListView({
         if (!(c.ai_confidence != null && c.ai_confidence < 0.66)) return false;
       }
       if (filter === "critical") {
-        if (!(c.ai_risk_level === "CRITICAL" || c.ai_risk_level === "HIGH")) return false;
+        if (!(c.ai_risk_level === "CRITICAL" || c.ai_risk_level === "HIGH"))
+          return false;
       }
       if (zoneFilter !== "all" && c.zone_type !== zoneFilter) return false;
-      if (coverageFilter !== "all" && c.health_coverage !== coverageFilter) return false;
+      if (coverageFilter !== "all" && c.health_coverage !== coverageFilter)
+        return false;
       return true;
     });
-
     if (sortFn) return [...filtered].sort(sortFn);
     return filtered;
   }, [data, filter, search, sortFn, zoneFilter, coverageFilter]);
 
-  const accent = showValidatedIcon ? "emerald" : "emerald";
-  const ringHover = showValidatedIcon
-    ? "hover:border-emerald-500/30"
-    : "hover:ring-2 hover:ring-emerald-500/20 hover:border-white/20";
+  // Critical count for the alert ribbon
+  const criticalCount = useMemo(
+    () =>
+      (data ?? []).filter(
+        (c) => c.ai_risk_level === "CRITICAL" || c.ai_risk_level === "HIGH",
+      ).length,
+    [data],
+  );
 
   return (
     <div className="px-6 lg:px-10 py-8 max-w-6xl">
-      {/* Header */}
+      {/* ============= Header ============= */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: easeOut }}
         className="flex items-start justify-between mb-8 gap-4 flex-wrap"
       >
-        <div>
-          <p className="text-emerald-400 text-xs font-semibold uppercase tracking-widest mb-2 flex items-center gap-2">
+        <div className="space-y-2">
+          <p className="text-emerald-400 text-[10px] font-semibold uppercase tracking-[0.18em] flex items-center gap-2">
             {eyebrowLive && (
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -141,60 +143,91 @@ export function ConsultationListView({
             )}
             {eyebrow}
           </p>
-          <h1 className="text-3xl lg:text-4xl font-semibold tracking-tight">{title}</h1>
-          <p className="text-zinc-400 mt-2 text-sm">{subtitle}</p>
+          <h1 className="text-3xl lg:text-4xl font-semibold tracking-tight leading-[1.1]">
+            {title}
+            <span className="text-emerald-400">.</span>
+          </h1>
+          <p className="text-zinc-400 text-sm leading-relaxed max-w-xl">
+            {subtitle}
+          </p>
         </div>
-        <button
-          onClick={() => refetch()}
-          disabled={isRefetching}
-          className="inline-flex items-center gap-2 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/[0.04] px-4 py-2 text-sm text-zinc-300 transition-colors"
-        >
-          <RefreshCw size={14} className={isRefetching ? "animate-spin" : ""} />
-          Rafraîchir
-        </button>
+
+        <div className="flex items-center gap-2">
+          {!showValidatedIcon && criticalCount > 0 && (
+            <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-rose-500/10 ring-1 ring-rose-500/30 px-3 py-1.5 text-xs font-semibold text-rose-300">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-500" />
+              </span>
+              {criticalCount} urgent{criticalCount > 1 ? "s" : ""}
+            </span>
+          )}
+          <motion.button
+            onClick={() => refetch()}
+            disabled={isRefetching}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            className="inline-flex items-center gap-2 rounded-full ring-1 ring-white/10 hover:ring-white/20 hover:bg-white/[0.04] px-4 py-2 text-sm text-zinc-300 transition-all"
+          >
+            <RefreshCw
+              size={14}
+              className={isRefetching ? "animate-spin" : ""}
+            />
+            Rafraîchir
+          </motion.button>
+        </div>
       </motion.div>
 
-      {/* Filters + search */}
+      {/* ============= Filters + search ============= */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1, ease: easeOut }}
-        className="flex items-center gap-3 mb-3 flex-wrap"
+        className="flex items-center gap-2.5 mb-3 flex-wrap"
       >
         {filters?.map((f) => (
-          <FilterChip key={f.value} active={filter === f.value} onClick={() => setFilter(f.value)}>
+          <FilterChip
+            key={f.value}
+            active={filter === f.value}
+            onClick={() => setFilter(f.value)}
+          >
             {f.label}
             {f.value === "all" && data ? ` (${data.length})` : ""}
           </FilterChip>
         ))}
 
         <div className={`${filters ? "ml-auto" : ""} relative w-full sm:w-72`}>
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
-          <Input
-            placeholder="Rechercher patient, symptômes..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 bg-white/[0.04] border-white/10 text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-emerald-500/40"
+          <Search
+            size={14}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none"
           />
+          <div className="rounded-full bg-white/[0.04] ring-1 ring-white/10 focus-within:ring-2 focus-within:ring-emerald-500/40 transition-all">
+            <input
+              placeholder="Rechercher patient, symptômes…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-transparent border-0 outline-none text-zinc-100 placeholder:text-zinc-500 pl-9 pr-4 py-2 text-sm rounded-full"
+            />
+          </div>
         </div>
       </motion.div>
 
-      {/* Zone + Coverage filters */}
+      {/* ============= Zone + Coverage filters ============= */}
       {showZoneCoverageFilters && (
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.15, ease: easeOut }}
-          className="flex items-center gap-3 mb-6 flex-wrap"
+          className="flex items-center gap-2.5 mb-6 flex-wrap"
         >
           <FilterSelect
             value={zoneFilter}
             onChange={(v) => setZoneFilter(v as ZoneType | "all")}
             options={[
               { value: "all", label: "Toutes les zones" },
-              { value: "rural", label: "🌾 Rural" },
-              { value: "periurbain", label: "🏘️ Périurbain" },
-              { value: "urbain", label: "🏙️ Urbain" },
+              { value: "rural", label: "Rural" },
+              { value: "periurbain", label: "Périurbain" },
+              { value: "urbain", label: "Urbain" },
             ]}
           />
           <FilterSelect
@@ -210,23 +243,29 @@ export function ConsultationListView({
           />
           {(zoneFilter !== "all" || coverageFilter !== "all") && (
             <button
-              onClick={() => { setZoneFilter("all"); setCoverageFilter("all"); }}
+              onClick={() => {
+                setZoneFilter("all");
+                setCoverageFilter("all");
+              }}
               className="text-xs text-zinc-500 hover:text-zinc-300 underline underline-offset-2 transition-colors"
             >
               Réinitialiser
             </button>
           )}
-          <span className="ml-auto text-xs text-zinc-500">
+          <span className="ml-auto text-xs text-zinc-500 tabular-nums">
             {visible.length} résultat{visible.length > 1 ? "s" : ""}
           </span>
         </motion.div>
       )}
 
-      {/* List */}
+      {/* ============= List ============= */}
       {isLoading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-24 w-full rounded-2xl bg-white/[0.04]" />
+            <Skeleton
+              key={i}
+              className="h-28 w-full rounded-2xl bg-white/[0.04]"
+            />
           ))}
         </div>
       ) : visible.length === 0 ? (
@@ -234,22 +273,23 @@ export function ConsultationListView({
           message={
             search
               ? emptyMessages.search
-              : emptyMessages[filter] ?? emptyMessages.all
+              : (emptyMessages[filter] ?? emptyMessages.all)
           }
-          accentEmerald
         />
       ) : (
         <motion.div
           initial="hidden"
           animate="show"
-          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } } }}
+          variants={{
+            hidden: {},
+            show: { transition: { staggerChildren: 0.06 } },
+          }}
           className="space-y-3"
         >
           {visible.map((c) => (
             <ConsultationRow
               key={c.id}
               consultation={c}
-              ringHover={ringHover}
               showValidatedIcon={showValidatedIcon}
               onClick={() => router.push(`/medecin/${c.id}`)}
             />
@@ -259,6 +299,10 @@ export function ConsultationListView({
     </div>
   );
 }
+
+// ============================================================================
+// Sub-components
+// ============================================================================
 
 function FilterChip({
   children,
@@ -270,91 +314,142 @@ function FilterChip({
   onClick: () => void;
 }) {
   return (
-    <button
+    <motion.button
       onClick={onClick}
+      whileTap={{ scale: 0.96 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
       className={[
-        "rounded-full px-4 py-1.5 text-sm font-medium transition-all",
+        "rounded-full px-4 py-1.5 text-sm font-medium transition-all ring-1",
         active
-          ? "bg-emerald-500/15 text-emerald-200 ring-1 ring-emerald-500/30"
-          : "bg-white/[0.04] border border-white/10 text-zinc-300 hover:bg-white/[0.06] hover:border-white/20",
+          ? "bg-emerald-500/15 text-emerald-200 ring-emerald-500/40 shadow-md shadow-emerald-500/10"
+          : "bg-white/[0.04] ring-white/10 text-zinc-300 hover:ring-white/20 hover:bg-white/[0.06]",
       ].join(" ")}
     >
       {children}
-    </button>
+    </motion.button>
   );
 }
 
 function ConsultationRow({
   consultation: c,
-  ringHover,
   showValidatedIcon,
   onClick,
 }: {
   consultation: ConsultationListItem;
-  ringHover: string;
   showValidatedIcon: boolean;
   onClick: () => void;
 }) {
   const isUncertain = c.ai_confidence != null && c.ai_confidence < 0.66;
+  const isCritical = c.ai_risk_level === "CRITICAL";
 
   return (
     <motion.div
       variants={{
         hidden: { opacity: 0, y: 12 },
-        show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: easeOut } },
+        show: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.45, ease: easeOut },
+        },
       }}
       whileHover={{ y: -2 }}
       transition={{ type: "spring", stiffness: 400, damping: 30 }}
       onClick={onClick}
-      className={`group relative cursor-pointer rounded-2xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] ${ringHover} transition-all overflow-hidden`}
+      className={[
+        "group relative cursor-pointer rounded-2xl ring-1 ring-white/10 bg-zinc-900/30 hover:bg-white/[0.04] hover:ring-white/20 transition-all overflow-hidden backdrop-blur-sm",
+        isCritical &&
+          !showValidatedIcon &&
+          "hover:ring-rose-500/40 hover:shadow-lg hover:shadow-rose-500/10",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
-      {/* Bande colorée risque */}
+      {/* Risk stripe with glow for critical */}
       {c.ai_risk_level && (
         <div
-          className="absolute left-0 top-0 bottom-0 w-1 opacity-70"
+          className={`absolute left-0 top-0 bottom-0 w-1 ${
+            isCritical && !showValidatedIcon
+              ? "opacity-90 shadow-[0_0_8px_currentColor]"
+              : "opacity-70"
+          }`}
           style={{ backgroundColor: RISK_STRIPE[c.ai_risk_level as RiskLevel] }}
         />
       )}
-      <div className="flex items-center gap-4 p-4 pl-5">
-        <div className="relative w-20 h-20 rounded-xl bg-zinc-900 overflow-hidden flex-shrink-0 ring-1 ring-white/10">
+
+      {/* Hover gradient flood */}
+      <div className="absolute inset-0 bg-gradient-to-r from-white/[0.02] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+      <div className="relative flex items-center gap-4 p-4 pl-5">
+        <div className="relative w-20 h-20 rounded-xl bg-zinc-900 overflow-hidden flex-shrink-0 ring-1 ring-white/10 group-hover:ring-white/20 transition-all">
           {c.image_url && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={absoluteUrl(c.image_url)} alt="" className="w-full h-full object-cover" />
+            <img
+              src={absoluteUrl(c.image_url)}
+              alt=""
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
           )}
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            {showValidatedIcon && <CheckCircle2 size={14} className="text-emerald-400" />}
-            <span className="font-semibold text-zinc-100 text-sm truncate">
-              {c.ai_prediction ?? "Analyse en cours..."}
+            {showValidatedIcon && (
+              <CheckCircle2
+                size={14}
+                className="text-emerald-400"
+                strokeWidth={2.5}
+              />
+            )}
+            <span className="font-semibold text-zinc-100 text-sm truncate tracking-tight">
+              {c.ai_prediction ?? "Analyse en cours…"}
             </span>
-            <RiskBadge level={c.ai_risk_level} isUncertain={isUncertain && !showValidatedIcon} size="sm" />
+            <RiskBadge
+              level={c.ai_risk_level}
+              isUncertain={isUncertain && !showValidatedIcon}
+              size="sm"
+              glow={isCritical && !showValidatedIcon}
+            />
             {c.ai_confidence != null && (
               <span className="text-xs text-zinc-500 tabular-nums">
                 {Math.round(c.ai_confidence * 100)}%
               </span>
             )}
           </div>
-          <p className="text-zinc-400 text-sm line-clamp-1">{c.symptoms}</p>
-          <div className="flex items-center gap-3 mt-1.5 text-xs text-zinc-500">
-            <span className="font-mono">{c.anonymous_patient_id}</span>
-            {c.body_area && <span>· {c.body_area}</span>}
+          <p className="text-zinc-400 text-sm line-clamp-1 leading-relaxed">
+            {c.symptoms}
+          </p>
+          <div className="flex items-center gap-2 mt-1.5 text-xs text-zinc-500 flex-wrap">
+            <span className="font-mono inline-block rounded bg-white/[0.04] ring-1 ring-white/[0.06] px-1.5 py-0.5 text-[10px]">
+              {c.anonymous_patient_id}
+            </span>
+            {c.body_area && (
+              <span className="inline-flex items-center gap-1">
+                <span className="w-0.5 h-0.5 rounded-full bg-zinc-600" />
+                {c.body_area}
+              </span>
+            )}
             {c.created_at && (
-              <span>
-                ·{" "}
-                {formatDistanceToNow(new Date(c.created_at), { locale: fr, addSuffix: true })}
+              <span className="inline-flex items-center gap-1">
+                <span className="w-0.5 h-0.5 rounded-full bg-zinc-600" />
+                {formatDistanceToNow(new Date(c.created_at), {
+                  locale: fr,
+                  addSuffix: true,
+                })}
               </span>
             )}
           </div>
           {c.ai_confidence != null && c.ai_risk_level && (
             <div className="flex items-center gap-2 mt-2">
-              <div className="w-24 h-1 bg-white/[0.06] rounded-full overflow-hidden">
+              <div className="w-32 h-1 bg-white/[0.06] rounded-full overflow-hidden ring-1 ring-white/[0.04]">
                 <div
-                  className="h-full rounded-full opacity-70"
+                  className="h-full rounded-full"
                   style={{
                     width: `${Math.round(c.ai_confidence * 100)}%`,
                     backgroundColor: RISK_STRIPE[c.ai_risk_level as RiskLevel],
+                    opacity: 0.85,
+                    boxShadow: isCritical
+                      ? `0 0 6px ${RISK_STRIPE[c.ai_risk_level as RiskLevel]}`
+                      : "none",
                   }}
                 />
               </div>
@@ -386,16 +481,20 @@ function FilterSelect({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className={[
-        "rounded-full px-3 py-1.5 text-sm font-medium transition-all appearance-none cursor-pointer pr-6",
-        "border bg-white/[0.04] text-zinc-300",
+        "rounded-full px-3 py-1.5 text-xs font-medium transition-all appearance-none cursor-pointer pr-6",
+        "ring-1 bg-white/[0.04] text-zinc-300",
         active
-          ? "border-emerald-500/40 text-emerald-300 bg-emerald-500/10"
-          : "border-white/10 hover:border-white/20 hover:bg-white/[0.06]",
+          ? "ring-emerald-500/40 text-emerald-300 bg-emerald-500/10"
+          : "ring-white/10 hover:ring-white/20 hover:bg-white/[0.06]",
       ].join(" ")}
       style={{ backgroundImage: "none" }}
     >
       {options.map((o) => (
-        <option key={o.value} value={o.value} className="bg-zinc-900 text-zinc-100">
+        <option
+          key={o.value}
+          value={o.value}
+          className="bg-zinc-900 text-zinc-100"
+        >
           {o.label}
         </option>
       ))}
@@ -403,28 +502,30 @@ function FilterSelect({
   );
 }
 
-function EmptyState({ message, accentEmerald }: { message: string; accentEmerald?: boolean }) {
+function EmptyState({ message }: { message: string }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, ease: easeOut }}
-      className="rounded-2xl border border-white/10 bg-white/[0.02] p-16 flex flex-col items-center text-center"
+      className="relative rounded-2xl ring-1 ring-white/10 bg-zinc-900/30 p-16 flex flex-col items-center text-center overflow-hidden backdrop-blur-sm"
     >
       <div
-        className={`relative w-20 h-20 rounded-2xl flex items-center justify-center mb-5 border ${
-          accentEmerald
-            ? "bg-emerald-500/10 ring-1 ring-emerald-500/20 border-emerald-500/20"
-            : "bg-white/[0.04] border-white/10"
-        }`}
-      >
-        <Inbox size={32} className={accentEmerald ? "text-emerald-400" : "text-zinc-500"} />
-        {accentEmerald && (
-          <Sparkles size={14} className="absolute -top-1 -right-1 text-emerald-300" />
-        )}
+        aria-hidden
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-32 rounded-full blur-3xl bg-emerald-500/10 pointer-events-none"
+      />
+      <div className="relative w-20 h-20 rounded-2xl bg-emerald-500/10 ring-1 ring-emerald-500/20 flex items-center justify-center mb-5 shadow-lg shadow-emerald-500/10">
+        <Inbox size={28} className="text-emerald-300" strokeWidth={2.2} />
+        <Sparkles
+          size={14}
+          className="absolute -top-1.5 -right-1.5 text-emerald-300 drop-shadow-[0_0_4px_rgba(52,211,153,0.6)]"
+          strokeWidth={2.5}
+        />
       </div>
-      <p className="text-zinc-100 font-semibold text-lg">{message}</p>
-      <p className="text-zinc-500 text-sm mt-2 max-w-sm">
+      <p className="text-zinc-100 font-semibold text-lg tracking-tight relative">
+        {message}
+      </p>
+      <p className="text-zinc-500 text-sm mt-2 max-w-sm leading-relaxed relative">
         Cette page se rafraîchit automatiquement toutes les 15 secondes.
       </p>
     </motion.div>
